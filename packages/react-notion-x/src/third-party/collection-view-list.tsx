@@ -1,6 +1,7 @@
 import * as React from 'react'
 
 import { PageBlock } from 'notion-types'
+import { getPageProperty } from 'notion-utils'
 
 import { useNotionContext } from '../context'
 import { CollectionViewProps } from '../types'
@@ -52,10 +53,13 @@ function List({ blockIds, collection, collectionView }) {
         <div className='notion-list-body'>
           {blockIds?.map((blockId) => {
             const block = recordMap.block[blockId]?.value as PageBlock
+            const tags: string[] = getPageProperty('Tag', block, recordMap)
+
             if (!block) return null
 
             const titleSchema = collection.schema.title
             const titleData = block?.properties?.title
+            if (tags.includes('draft')) return
 
             return (
               <components.PageLink
